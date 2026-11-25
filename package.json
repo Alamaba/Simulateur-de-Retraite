@@ -1,0 +1,13 @@
+{
+  "name": "simulateur-pension",
+  "version": "2026.11.10",
+  "description": "Simulateur de pension de retraite – Djibouti",
+  "private": true,
+  "scripts": {
+    "start": "node serve.js",
+    "test": "node --test tests/calcul.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

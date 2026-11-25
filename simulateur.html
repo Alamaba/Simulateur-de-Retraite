@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulateur de pension · Djibouti</title>
+<meta name="description" content="Estimez votre pension de retraite (RG, FCT, FNP, DMG) – République de Djibouti.">
+<meta name="theme-color" content="#0b5cad">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+/* Thème et taille appliqués avant l'affichage (évite un clignotement) */
+(function () {
+  var t = null, s = null;
+  try {
+    /* Reprise des réglages et saisies enregistrés par les versions précédentes */
+    ['lang', 'scen', 'state', 'size', 'theme', 'tour'].forEach(function (k) {
+      var o = localStorage.getItem('cnss-' + k);
+      if (o !== null) { if (localStorage.getItem('pension-' + k) === null) localStorage.setItem('pension-' + k, o); localStorage.removeItem('cnss-' + k); }
+    });
+    t = localStorage.getItem('pension-theme'); s = localStorage.getItem('pension-size');
+  } catch (e) {}
+  if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.setAttribute('data-size', s === 'lg' ? 'lg' : 'md');
+})();
+</script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo"><img src="icons/icon.svg" alt=""></div>
+    <div><h1 data-i18n="app_title"></h1><span data-i18n="app_sub"></span></div>
+  </div>
+  <div class="status"><i></i><span data-i18n="live"></span></div>
+  <button class="icon-btn install" type="button" id="installBtn" hidden data-i18n-aria="install">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="txt" data-i18n="install"></span></button>
+  <button class="icon-btn" type="button" id="printBtn" data-i18n-aria="print">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg><span class="txt" data-i18n="print"></span></button>
+  <div class="menu-wrap">
+    <button class="icon-btn" type="button" id="setBtn" aria-haspopup="true" aria-expanded="false" aria-controls="setMenu" data-i18n-aria="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+      <span class="txt" data-i18n="settings"></span>
+    </button>
+    <div class="menu" id="setMenu" role="menu" hidden>
+      <div class="menu-row"><span data-i18n="set_lang"></span><div class="mseg" id="langSeg"></div></div>
+      <div class="menu-row"><span data-i18n="set_size"></span><div class="mseg" id="sizeSeg"><button type="button" data-size="md" data-i18n="size_md"></button><button type="button" data-size="lg" data-i18n="size_lg"></button></div></div>
+      <div class="menu-row"><span data-i18n="set_theme"></span><div class="mseg" id="themeSeg"><button type="button" data-th="light" data-i18n="th_light"></button><button type="button" data-th="dark" data-i18n="th_dark"></button></div></div>
+      <a class="menu-link" id="lawsLink" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/></svg><span data-i18n="laws"></span></a>
+      <button class="menu-link" type="button" id="tourBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2.5 2-2.5 3.5M12 17h.01"/></svg><span data-i18n="set_tour"></span></button>
+    </div>
+  </div>
+</header>
+
+<main class="app">
+
+  <div class="banner" id="banner" role="status">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <span data-i18n="example_banner"></span>
+    <button type="button" id="bannerBtn" data-i18n="example_cta"></button>
+  </div>
+
+  <!-- =============== PARAMÈTRES =============== -->
+  <section class="card controls" id="controls" aria-labelledby="paramsTitle">
+    <div class="ctl-prog" aria-hidden="true"><i id="ctlProg"></i></div>
+    <div class="sheet-h"><strong data-i18n="params"></strong><button class="btn" type="button" id="sheetClose" data-i18n="sheet_close"></button></div>
+    <div class="card-h"><h2 id="paramsTitle" data-i18n="params"></h2><span class="tag" id="regTag">RG</span></div>
+    <div class="ctl-body">
+
+      <!-- Étape 1 : régime et naissance -->
+      <div class="step" id="step1">
+        <button class="step-h" type="button" aria-expanded="true"><span class="step-n">1</span><span class="step-t" data-i18n="step1"></span><span class="step-ok" aria-hidden="true">✓</span><span class="step-chev" aria-hidden="true"></span></button>
+        <div class="step-b">
+          <div class="seg" id="seg" role="tablist">
+            <span class="pill" id="pill"></span>
+            <button type="button" role="tab" data-r="RG">RG</button>
+            <button type="button" role="tab" data-r="FCT">FCT</button>
+            <button type="button" role="tab" data-r="FNP">FNP</button>
+            <button type="button" role="tab" data-r="DMG">DMG</button>
+          </div>
+          <div class="regime-info" id="regInfo"></div>
+          <div class="grp" role="group" aria-labelledby="birthT">
+            <div class="grp-t"><span id="birthT" data-i18n="birth"></span><span id="ageTxt"></span></div>
+            <div class="date3">
+              <div><label class="fld-lbl" for="bD" data-i18n="day"></label><input class="fld num" id="bD" type="text" inputmode="numeric" maxlength="2" autocomplete="bday-day"></div>
+              <div><label class="fld-lbl" for="bM" data-i18n="month"></label><select class="fld" id="bM" autocomplete="bday-month"></select></div>
+              <div><label class="fld-lbl" for="bY" data-i18n="year"></label><input class="fld num" id="bY" type="text" inputmode="numeric" maxlength="4" autocomplete="bday-year"></div>
+            </div>
+            <div class="ferr" id="birthErr" role="alert"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Étape 2 : revenu -->
+      <div class="step" id="step2">
+        <button class="step-h" type="button" aria-expanded="true"><span class="step-n">2</span><span class="step-t" id="baseTitle"></span><span class="step-ok" aria-hidden="true">✓</span><span class="step-chev" aria-hidden="true"></span></button>
+        <div class="step-b">
+          <div class="grp-t sub"><span><span id="baseSub"></span><button class="tip" type="button" id="baseTip" data-tip="salary">?</button></span></div>
+          <div class="slider" style="--c:#34d399">
+            <div class="s-top">
+              <span class="dot" style="background:#34d399"></span>
+              <div class="s-lbl"><b id="baseLbl"></b><small id="baseHint"></small></div>
+              <input class="mini wide" type="text" id="baseNum" inputmode="numeric" autocomplete="off" placeholder="0">
+            </div>
+            <input type="range" id="baseRange" min="0" step="1">
+            <div class="ticks" id="baseTicks"></div>
+          </div>
+          <div class="fwarn" id="baseWarn" role="status"></div>
+        </div>
+      </div>
+
+      <!-- Étape 3 : années cotisées -->
+      <div class="step" id="step3">
+        <button class="step-h" type="button" aria-expanded="true"><span class="step-n">3</span><span class="step-t" data-i18n="step3"></span><span class="step-ok" aria-hidden="true">✓</span><span class="step-chev" aria-hidden="true"></span></button>
+        <div class="step-b">
+          <div class="grp-t sub"><span><span id="yrsTxt"></span><button class="tip" type="button" data-tip="min">?</button></span></div>
+          <div class="mode" id="modeTabs" role="tablist">
+            <button type="button" role="tab" data-mode="manual" aria-selected="true" data-i18n="mode_manual"></button>
+            <button type="button" role="tab" data-mode="auto" aria-selected="false" data-i18n="mode_auto"></button>
+          </div>
+          <div class="auto-box" id="autoBox" hidden>
+            <p class="auto-hint"><span data-i18n="car_hint"></span> <button class="tip" type="button" data-tip="auto">?</button></p>
+            <div class="my-row">
+              <span class="fld-lbl" data-i18n="car_start"></span>
+              <div class="my"><select class="fld" id="csM" data-i18n-aria="month"></select><input class="fld num" id="csY" type="text" inputmode="numeric" maxlength="4" data-i18n-aria="year"></div>
+            </div>
+            <label class="chk"><input type="checkbox" id="cActive" checked><span data-i18n="car_active"></span></label>
+            <div class="my-row" id="ceRow" hidden>
+              <span class="fld-lbl" data-i18n="car_end"></span>
+              <div class="my"><select class="fld" id="ceM" data-i18n-aria="month"></select><input class="fld num" id="ceY" type="text" inputmode="numeric" maxlength="4" data-i18n-aria="year"></div>
+            </div>
+            <div class="gaps-t" data-i18n="car_gaps"></div>
+            <div id="gaps"></div>
+            <button class="ghost sm" type="button" id="addGap" data-i18n="car_add_gap"></button>
+            <div class="car-msg idle" id="carMsg" aria-live="polite"></div>
+          </div>
+          <div id="sliders"></div>
+          <div class="req idle" id="req"></div>
+        </div>
+      </div>
+
+      <div class="ctl-actions">
+        <button class="ghost" type="button" id="exBtn" data-i18n="reset_ex"></button>
+        <button class="ghost" type="button" id="clearBtn" data-i18n="clear"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== RÉSULTATS =============== -->
+  <div class="right">
+
+    <section class="card summary idle" id="summary">
+      <span class="sum-glow" aria-hidden="true"></span>
+      <span class="sum-ring" aria-hidden="true"></span>
+      <div class="sum-left">
+        <div class="sum-top">
+          <span class="sum-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8z"/></svg></span>
+          <span class="sum-eyebrow" id="sumEyebrow"></span>
+          <span class="sum-chip" id="sumChip" hidden></span>
+        </div>
+        <div class="sum-amt num" id="sumAmt" aria-hidden="true"></div>
+        <div class="sum-when" id="sumWhen" aria-hidden="true"></div>
+        <p class="sum-text" id="sumMain"></p>
+      </div>
+      <div class="sum-journey" id="sumJourney" aria-hidden="true">
+        <div class="j-labels">
+          <div><span class="j-k" data-i18n="j_today"></span><b id="jA"></b></div>
+          <div class="j-r"><span class="j-k" data-i18n="j_dep"></span><b id="jB"></b></div>
+        </div>
+        <div class="j-track"><i class="j-fill" id="jFill"></i><span class="j-dot a"></span><span class="j-now" id="jNow"></span><span class="j-dot b"></span></div>
+        <div class="j-mid" id="jMid"></div>
+      </div>
+      <div class="sum-sub" id="sumSubRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span id="sumSub"></span></div>
+      <p class="sr-only" id="sumSr" aria-live="polite"></p>
+    </section>
+
+    <section class="card cockpit" aria-labelledby="gaugeTitle">
+      <div class="gauge-zone idle" id="gaugeZone">
+        <div class="card-h" style="padding:0"><h2 id="gaugeTitle"><span data-i18n="gauge_title"></span></h2><span class="tag" id="capTag"></span></div>
+        <div class="view-tabs" id="viewTabs" role="tablist">
+          <button type="button" role="tab" data-view="now" data-i18n="view_now"></button>
+          <button type="button" role="tab" data-view="dep" data-i18n="view_dep"></button>
+          <button class="tip" type="button" data-tip="view">?</button>
+        </div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 300 258" id="gauge" aria-hidden="true"></svg>
+          <div class="g-center">
+            <div class="g-cap" id="gCap"></div>
+            <div class="g-amount num" id="amount">—</div>
+            <div class="g-unit" data-i18n="per_month"></div>
+            <div class="g-sub" id="gSub"></div>
+            <div class="pill-rate"><span data-i18n="rate"></span> <b id="rateTxt">0 %</b><button class="tip" type="button" data-tip="rate">?</button></div>
+            <div class="g-msg" id="gMsg"></div>
+            <button class="g-cta" type="button" id="gCta" data-i18n="example_cta"></button>
+          </div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="side-zone">
+        <div class="count flat" id="count">
+          <div class="count-t" id="countT"></div>
+          <div class="count-grid">
+            <div class="cbox"><span class="num" id="cY">0</span><small data-i18n="years_u"></small></div>
+            <div class="cbox"><span class="num" id="cM">0</span><small data-i18n="months_u"></small></div>
+            <div class="cbox"><span class="num" id="cD">0</span><small data-i18n="days_u"></small></div>
+          </div>
+          <div class="count-d" id="countD"></div>
+        </div>
+        <div class="kpis">
+          <div class="kpi big"><div><small data-i18n="kq"></small><em data-i18n="kq_s"></em></div><span class="num" id="kQ">—</span></div>
+          <div class="kpi"><small data-i18n="ka"></small><span class="num" id="kA">—</span><em data-i18n="ka_s"></em></div>
+          <div class="kpi"><small><span data-i18n="kr"></span><button class="tip" type="button" data-tip="repl">?</button></small><span class="num" id="kR">—</span><em id="kRsub"></em></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Onglets -->
+    <section class="card tabs-card">
+      <div class="tabs" id="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-prev" aria-controls="pan-prev" aria-selected="true" data-tab="prev"><span data-i18n="tab_prev"></span></button>
+        <button type="button" role="tab" id="tab-detail" aria-controls="pan-detail" aria-selected="false" data-tab="detail" tabindex="-1"><span data-i18n="tab_detail"></span></button>
+        <button type="button" role="tab" id="tab-cmp" aria-controls="pan-cmp" aria-selected="false" data-tab="cmp" tabindex="-1"><span data-i18n="tab_cmp"></span> <span class="tab-badge" id="scenCount">0</span></button>
+      </div>
+
+      <!-- Prévision -->
+      <div class="tab-pan" id="pan-prev" role="tabpanel" aria-labelledby="tab-prev">
+        <div class="prev" id="prevCard">
+          <div class="prev-body">
+            <div class="prev-main">
+              <div class="prev-lbl"><span id="prevLbl"></span> <button class="tip" type="button" data-tip="prev">?</button></div>
+              <div class="prev-amt num" id="prevAmt">—</div>
+              <div class="prev-delta" id="prevDelta"></div>
+              <div class="prev-stats">
+                <div><small data-i18n="prev_rate"></small><b class="num" id="prevRate">—</b></div>
+                <div><small data-i18n="prev_years"></small><b class="num" id="prevYears">—</b></div>
+                <div><small data-i18n="prev_q"></small><b class="num" id="prevQ">—</b></div>
+              </div>
+              <div class="tl">
+                <div class="tl-bar"><i class="tl-now" id="tlNow"></i><i class="tl-fut" id="tlFut"></i><span class="tl-min" id="tlMin"></span></div>
+                <div class="tl-leg">
+                  <span><i class="sw now"></i><span id="tlNowTxt"></span></span>
+                  <span><i class="sw fut"></i><span id="tlFutTxt"></span></span>
+                  <span><i class="sw min"></i><span id="tlMinTxt"></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="prev-side">
+              <div class="prev-hyp evo" id="hypRG" hidden>
+                <label class="evo-sw">
+                  <input type="checkbox" id="evoRG" checked>
+                  <span class="evo-track" aria-hidden="true"><i></i></span>
+                  <span class="evo-txt"><b id="evoT"></b><small id="evoSub"></small></span>
+                </label>
+                <div class="evo-steps" id="evoSteps"></div>
+                <small class="hyp-hint" id="evoNote"></small>
+              </div>
+              <div class="prev-hyp" id="hypGrowth">
+                <div class="grp-t"><span id="growthLbl"></span><span class="num" id="growthTxt">0 %</span></div>
+                <input type="range" id="growth" min="0" max="5" step="0.5" value="0" style="--c:#a78bfa">
+                <div class="ticks"><span>0 %</span><span>2,5 %</span><span>5 %</span></div>
+                <small class="hyp-hint" data-i18n="prev_growth_hint"></small>
+              </div>
+              <div class="prev-msg" id="prevMsg"></div>
+            </div>
+          </div>
+          <div class="chart" id="chartBox">
+            <div class="chart-h"><b data-i18n="chart_t"></b><span class="chart-note" id="projNote"></span></div>
+            <div class="bars" id="bars" role="img"></div>
+            <div class="xlab" id="xlab"></div>
+            <div class="chart-legend">
+              <span><i style="background:linear-gradient(#22d3ee,#3b82f6)"></i><span data-i18n="leg_cur"></span></span>
+              <span><i style="background:rgba(99,102,241,.75)"></i><span data-i18n="leg_more"></span></span>
+              <span><i class="lg-dep"></i><span data-i18n="leg_dep"></span></span>
+              <span><i style="background:rgba(52,211,153,.75)"></i><span data-i18n="leg_cap"></span></span>
+              <span><i style="background:rgba(251,113,133,.4)"></i><span data-i18n="leg_na"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détail du calcul -->
+      <div class="tab-pan" id="pan-detail" role="tabpanel" aria-labelledby="tab-detail" hidden>
+        <div class="flow">
+          <p class="detail-for" id="detailFor"></p>
+          <div class="flow-grid">
+            <div>
+              <div class="f-row">
+                <div class="f-head"><span id="refLbl"></span><span id="fRef">—</span></div>
+                <div class="f-track"><i id="tRef" style="background:var(--line-2);left:0;width:0"></i></div>
+                <div class="f-sub" id="fRefSub"></div>
+              </div>
+              <div class="f-row">
+                <div class="f-head"><span><span data-i18n="brut"></span><button class="tip" type="button" data-tip="rate">?</button></span><span id="fBrut">—</span></div>
+                <div class="f-track"><i id="tBrut" style="background:linear-gradient(90deg,#3b82f6,#a78bfa);left:0;width:0"></i></div>
+                <div class="f-sub" id="fBrutSub"></div>
+              </div>
+              <div class="f-row">
+                <div class="f-head"><span><span data-i18n="ret"></span><button class="tip" type="button" data-tip="ret">?</button></span><span id="fRet" class="neg">—</span></div>
+                <div class="f-track"><i id="tRet" style="background:var(--red);width:0"></i></div>
+                <div class="f-sub" id="fRetSub"></div>
+              </div>
+              <div class="f-total"><span data-i18n="net_m"></span><span class="num" id="fNet">—</span></div>
+            </div>
+            <div class="tbl-wrap"><table class="cmp" id="detailTable"></table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparer -->
+      <div class="tab-pan" id="pan-cmp" role="tabpanel" aria-labelledby="tab-cmp" hidden>
+        <div class="scen">
+          <div class="scen-top">
+            <p data-i18n="scen_help"></p>
+            <button class="btn" type="button" id="saveScen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="scen_save"></span></button>
+          </div>
+          <div id="scenList"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<p class="disclaimer" data-i18n-html="disclaimer"></p>
+
+<div class="scrim" id="scrim"></div>
+<div class="dock" id="dock">
+  <div><small id="dockLbl" data-i18n="dock_lbl"></small><span class="num" id="dAmount">—</span> <small style="display:inline">FDJ</small></div>
+  <button class="btn" type="button" id="dockEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h4L19 10l-4-4L4 17z"/></svg><span data-i18n="dock_edit"></span></button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toastMsg"></span><button type="button" id="toastBtn"></button></div>
+
+<div class="tour" id="tour" hidden>
+  <div class="tour-spot" id="tourSpot"></div>
+  <div class="tour-bub" id="tourBub" role="dialog" aria-modal="true" aria-labelledby="tourT">
+    <div class="tour-step" id="tourStep"></div>
+    <h4 id="tourT"></h4>
+    <p id="tourP"></p>
+    <div class="tour-act"><button type="button" class="tour-skip" id="tourSkip" data-i18n="tour_skip"></button><button type="button" class="btn" id="tourNext"></button></div>
+  </div>
+</div>
+
+<div id="tipPop" role="tooltip"></div>
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-labelledby="introT">
+  <div class="intro-box">
+    <span class="badge" data-i18n="intro_badge"></span>
+    <h3 id="introT" data-i18n="intro_t"></h3>
+    <p data-i18n-html="intro_p"></p>
+    <div class="intro-act">
+      <button class="go" id="introGo" type="button" data-i18n="example_cta"></button>
+      <button class="go alt" id="introEx" type="button" data-i18n="reset_ex"></button>
+    </div>
+  </div>
+</div>
+
+<div id="printSheet" aria-hidden="true"></div>
+
+<script src="js/config.js"></script>
+<script src="js/calcul.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
