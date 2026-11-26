@@ -88,7 +88,7 @@ a{color:var(--brand)}
 /* =================================================================
    En-tête
    ================================================================= */
-.top{max-width:1320px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top{max-width:var(--wrap);margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;margin-inline-end:auto}
 .logo{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;overflow:hidden;flex:none;box-shadow:0 6px 18px rgba(67,56,202,.35)}
 .logo img{max-width:100%;max-height:100%;display:block}
@@ -108,7 +108,7 @@ a{color:var(--brand)}
 /* =================================================================
    Mise en page
    ================================================================= */
-.app{max-width:1320px;margin:0 auto;padding:6px 24px 40px;display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}
+.app{max-width:var(--wrap);margin:0 auto;padding:6px 24px 40px;display:grid;grid-template-columns:var(--side) minmax(0,1fr);gap:var(--gap);align-items:start}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;box-shadow:var(--shadow)}
 .card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px 0}
 .card-h h2{margin:0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:flex;align-items:center;gap:6px}
@@ -312,7 +312,7 @@ table.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
 .cmp .act button.x{color:var(--red)}
 .scen-empty{padding:18px;text-align:center;color:var(--faint);font-size:12.5px;border:1px dashed var(--line-2);border-radius:14px}
 
-.disclaimer{max-width:1320px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:var(--faint);text-align:center}
+.disclaimer{max-width:var(--wrap);margin:0 auto;padding:0 24px 40px;font-size:12px;color:var(--faint);text-align:center}
 .disclaimer a{color:var(--muted)}
 
 /* Barre mobile + feuille */
@@ -407,7 +407,7 @@ table.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
 [hidden]{display:none!important}
 
 /* Mode grands caractères : agrandit toute l'interface */
-html[data-size="lg"] body{zoom:1.16}
+html[data-size="lg"] body{zoom:calc(1.16 * var(--uz))}
 html[data-size="lg"] .g-amount{font-size:clamp(38px,5vw,56px)}
 
 /* =================================================================
@@ -817,3 +817,18 @@ select.fld.mpick.open{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,
 [data-theme="light"] .mp-m.on{border-color:transparent;background:linear-gradient(135deg,#22d3ee,#6366f1 60%,#a78bfa);box-shadow:0 8px 22px rgba(99,102,241,.35)}
 [data-theme="light"] .mp-m.on span,[data-theme="light"] .mp-m.on small{color:#fff}
 @media (prefers-reduced-motion:reduce){ #monthPop{transition:none} }
+
+/* =================================================================
+   Largeur adaptative : l'application suit la taille de l'écran
+   ================================================================= */
+:root{--wrap:clamp(1320px,94vw,2400px);--side:clamp(380px,24vw,480px);--gap:clamp(20px,1.2vw,28px)}
+.right,.bottom{gap:var(--gap)}
+@media (min-width:1800px){
+  .app,.top,.disclaimer{padding-inline:clamp(24px,2vw,48px)}
+}
+/* Très grands écrans (4K…) : toute l'interface est agrandie pour rester lisible */
+:root{--uz:1}
+body{zoom:var(--uz)}
+@media (min-width:2800px){ :root{--uz:1.25} }
+@media (min-width:3400px){ :root{--uz:1.5} }
+@media print{ :root{--uz:1} }

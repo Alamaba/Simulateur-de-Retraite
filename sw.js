@@ -6,7 +6,7 @@
    ⚠ Changer CACHE à chaque mise en ligne (même valeur que version dans
      js/config.js) pour forcer la mise à jour sur les téléphones.
    ===================================================================== */
-var CACHE = 'pension-2026.11.10';
+var CACHE = 'pension-2026.11.11';
 var FILES = [
   './',
   'simulateur.html',

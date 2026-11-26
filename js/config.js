@@ -16,7 +16,7 @@
   'use strict';
 
   return {
-    version: '2026.11.10',
+    version: '2026.11.11',
     dateLegislation: '2026-11-24',
 
     /* Valeur mensuelle du point d'indice : numerateur / denominateur (FDJ) */

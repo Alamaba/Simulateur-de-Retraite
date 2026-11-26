@@ -8,7 +8,7 @@
 
 <br>
 
-<img src="https://img.shields.io/badge/version-2026.11.10-6366f1?style=for-the-badge&labelColor=0b1220" alt="Version 2026.11.10">
+<img src="https://img.shields.io/badge/version-2026.11.11-6366f1?style=for-the-badge&labelColor=0b1220" alt="Version 2026.11.11">
 <img src="https://img.shields.io/badge/tests-30%20r%C3%A9ussis-34d399?style=for-the-badge&labelColor=0b1220" alt="30 tests réussis">
 <img src="https://img.shields.io/badge/JavaScript-sans%20framework-22d3ee?style=for-the-badge&labelColor=0b1220" alt="JavaScript sans framework">
 <img src="https://img.shields.io/badge/PWA-hors%20ligne-a78bfa?style=for-the-badge&labelColor=0b1220" alt="PWA hors ligne">
